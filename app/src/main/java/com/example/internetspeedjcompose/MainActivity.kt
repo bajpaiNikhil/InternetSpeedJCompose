@@ -16,11 +16,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import com.chaquo.python.Python
+import com.chaquo.python.android.AndroidPlatform
 import com.example.internetspeedjcompose.ui.theme.InternetSpeedJComposeTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initPython()
+
         setContent {
             InternetSpeedJComposeTheme {
                 // A surface container using the 'background' color from the theme
@@ -43,12 +47,37 @@ class MainActivity : ComponentActivity() {
                             keyboardType = KeyboardType.Number
                         )
                     )
-
                 }
-                val network = hasNetwork(applicationContext)
-                Log.d("mainActivity" , "$network")
+                val b = pythonHolder()
+                Log.d("mainActivity" , b)
+                val loader = Thread{
+                    when{
+                        NetworkReachability.hasInternetConnected(this)->runOnUiThread{
+                            Log.d("mainActivity" ,"internetAvailable")
+                        }else->{
+                            Log.d("mainActivity" , "no internet")
+                        }
+                    }
+                }
+                loader.start()
             }
         }
     }
+
+    private fun pythonHolder(): String {
+        val python = Python.getInstance()
+        val pythonFile = python.getModule("FirstPythonScript")
+        val c = pythonFile.callAttr("pythonFunctionIs").toString()
+        Log.d("mainActivity" , c)
+        return pythonFile.callAttr("pythonFunctionIs").toString()
+
+    }
+
+    private fun initPython() {
+        if(!Python.isStarted()){
+            Python.start(AndroidPlatform(this))
+        }
+    }
+
 }
 

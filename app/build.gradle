@@ -1,7 +1,9 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.chaquo.python' //3
 }
+//apply plugin: 'com.chaquo.python'
 
 android {
     compileSdk 31
@@ -12,6 +14,21 @@ android {
         targetSdk 31
         versionCode 1
         versionName "1.0"
+        //till ndk it's 4
+        sourceSets {
+            main {
+                python {
+                    srcDirs = ["src/main/python"]
+                }
+            }
+        }
+        python {
+            buildPython "C:/Users/NikhilBajpai/AppData/Local/Programs/Python/Python310"
+            buildPython "python3"
+        }
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

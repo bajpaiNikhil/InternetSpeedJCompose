@@ -1,0 +1,3 @@
+
+def pythonFunctionIs():
+    return "iamstupid"
